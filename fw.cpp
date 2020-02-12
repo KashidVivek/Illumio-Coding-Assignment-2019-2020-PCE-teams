@@ -8,6 +8,7 @@
 #include <stdlib.h>
 using namespace std;
 
+//Firewall Rules
 struct rule{
 public:
 	rule(string direction,string protocol,string port,string ip_addr){
@@ -22,6 +23,8 @@ public:
 	string ip_addr;
 };
 
+
+//Firewall class 
 class firewall{
 public:
 	string path;
@@ -37,7 +40,7 @@ public:
 
 };
 
-
+//Function to parse csv file
 void firewall :: get_rules(){
 	ifstream ip(path);
 	string direction,protocol,port,ip_addr,is;
@@ -52,8 +55,8 @@ void firewall :: get_rules(){
 
 }
 
+//Function to return true or false for allowing packet
 bool firewall :: accept_packet(string direction, string protocol, int port, string ip_addr){
-	//for(const rule *e : fw_rules){
 	for(auto i=fw_rules.begin();i != fw_rules.end();i++){
 		if(((*i)->direction == direction) && ((*i)->protocol == protocol) && check_port((*i)->port,port) && check_ip_addr((*i)->ip_addr,ip_addr)){
 			return true;
@@ -62,6 +65,8 @@ bool firewall :: accept_packet(string direction, string protocol, int port, stri
 	return false;
 }
 
+
+//Function to check port ranges
 bool firewall :: check_port(string c_port, int port){
 	stringstream ss(c_port);
 	string l_val,r_val;
@@ -82,6 +87,8 @@ bool firewall :: check_port(string c_port, int port){
 	return false;
 }
 
+
+//Function to check IP in the range is valid 
 bool firewall :: check_ip_addr(string c_ip_addr,string ip_addr){
 	stringstream ss(c_ip_addr);
 	string l_val,r_val;
@@ -107,7 +114,7 @@ bool firewall :: check_ip_addr(string c_ip_addr,string ip_addr){
 }
  
 
-// function to conversion and print 
+// Function to conversion and print 
 // the hexadecimal value 
 string firewall :: ipToHexa(string addr) 
 { 
@@ -128,8 +135,6 @@ string firewall :: ipToHexa(string addr)
 int main(){
 	firewall *f = new firewall("/Users/vivek/Desktop/Illumio Coding Assignment/input.csv");
 	f->get_rules();
-	//cout<< std::boolalpha<<f->check_port("10000-20000",10234)<<endl;
-	//cout<< std::boolalpha<<f->check_ip_addr("192.168.1.1-192.168.2.5","192.168.2.1");
 	cout<< std::boolalpha<<f->accept_packet("outbound", "tcp", 10234,"192.168.10.11")<<endl;
 	cout<< std::boolalpha<<f->accept_packet("inbound", "udp", 53, "192.168.2.1")<<endl;
 	return 0;
